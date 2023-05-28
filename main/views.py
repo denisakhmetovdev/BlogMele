@@ -6,20 +6,13 @@ from django.shortcuts import render, get_object_or_404
 from django.core.mail import send_mail
 from django.views.decorators.http import require_POST
 from taggit.models import Tag
-from django.contrib.postgres.search import SearchVector, SearchRank, SearchQuery, TrigramSimilarity
+from django.contrib.postgres.search import TrigramSimilarity
 
-from .models import Post, Comment
+from .models import Post
 from .forms import EmailPostForm, CommentForm, SearchForm
 
+
 User = get_user_model()
-
-
-# class PostListView(ListView):
-#
-#     queryset = Post.published.all()
-#     context_object_name = 'posts'
-#     paginate_by = 3
-#     template_name = 'main/post/list.html'
 
 
 def post_list(request, tag_slug=None):
@@ -113,9 +106,6 @@ def post_search(request):
         form = SearchForm(request.GET)
         if form.is_valid():
             query = form.cleaned_data['query']
-            # search_vector = SearchVector('title', weight='A', config='russian') + \
-            #                 SearchVector('body', weight='B', config='russian')
-            # search_query = SearchQuery(query, config='russian')
             results = Post.published.annotate(
                 similarity=TrigramSimilarity('title', query),
             ).filter(similarity__gt=0.1).order_by('-similarity')
