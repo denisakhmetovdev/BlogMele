@@ -1,0 +1,25 @@
+{% extends "main/base.html" %}
+
+
+{% block title %}
+    Поделиться постом
+{% endblock title %}
+
+
+{% block content %}
+{% if sent %}
+    <h1>E-main успешно отправлен</h1>
+    <p>
+        Статья "{{ post.title }}" была успешно отправлена
+        на email-адрес {{ form.cleaned_data.to }}
+    </p>
+<a href="{% url 'main:post_list' %}">На главную</a>
+{% else %}
+    <h1>Отправить "{{ post.title }}" на email</h1>
+    <form method="post">
+        {{ form.as_p }}
+        {% csrf_token %}
+      <input type="submit" value="Отправить email">
+    </form>
+{% endif %}
+{% endblock content %}

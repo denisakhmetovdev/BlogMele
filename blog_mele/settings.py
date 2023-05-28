@@ -31,6 +31,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+SITE_ID = 1
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,6 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
+    'taggit',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
+    'django.contrib.postgres',
 ]
 
 MIDDLEWARE = [
@@ -77,12 +83,30 @@ WSGI_APPLICATION = 'blog_mele.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': getenv('NAME'),
+        'USER': getenv('USER'),
+        'PASSWORD': getenv('PASSWORD'),
+        'PORT': getenv('PORT')
     }
 }
+
+
+# Конфигурация сервера электронной почты
+EMAIL_HOST = getenv('EMAIL_HOST')
+EMAIL_HOST_USER = getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = getenv('EMAIL_PORT')
+EMAIL_USE_TLS = True
 
 
 # Password validation

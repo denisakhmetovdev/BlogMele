@@ -1,13 +1,48 @@
 {% extends "main/base.html" %}
+{% load main_tags %}
 
 
 {% block title %}
     {{ post.title }}
 {% endblock %}
 
+
 {% block content %}
 <h1>{{ post.title }}</h1> <p class="date">
-Published {{ post.publish }} by {{ post.author }}
+Опубликовано {{ post.publish }}. Автор {{ post.author }}
 </p>
-{{ post.body|linebreaks }}
+{{ post.body|markdown }}
+<p>
+    <a href="{% url 'main:post_share' post.id %}">
+        Поделиться постом
+    </a>
+</p>
+
+<h2>Похожие посты</h2>
+
+{% for post in similar_posts%}
+    <p>
+        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+    </p>
+{% empty %}
+Похожих постов ещё нет
+{% endfor %}
+{% with comments.count as total_comments%}
+    <h2>
+        комментариев: {{ total_comments }}
+    </h2>
+{% endwith %}
+
+{% for comment in comments%}
+    <div class="comment">
+        <p class="info">
+            Комментарий {{ forloop.counter }} от {{ comment.name }}
+            {{ comment.created }}
+        </p>
+        {{ comment.body|linebreaks }}
+    </div>
+    {% empty %}
+        <p>Комментарии отсутствуют</p>
+{% endfor %}
+{% include "main/post/includes/comment_form.html" %}
 {% endblock %}

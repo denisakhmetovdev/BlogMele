@@ -1,0 +1,37 @@
+{% extends "main/base.html" %}
+{% load main_tags %}
+
+
+{% block title %}
+    Поиск
+{% endblock title %}
+
+
+{% block content %}
+{% if query %}
+    <h1>Посты, содержащие "{{ query }}"</h1>
+    <h3>
+        {% with results.count as total_results %}
+        Результатов найдено: {{ total_results }}
+        {% endwith %}
+    </h3>
+
+{% for post in results%}
+    <h4>
+        <a href="{{ post.get_absolute_url }}">
+            {{ post.title }}
+        </a>
+    </h4>
+    {{ post.body|markdown|truncatewords_html:12 }}
+    {% empty %}
+        <p>Нет результатов по вашему запросу</p>
+{% endfor %}
+<p><a href="{% url 'main:post_search' %}">Искать снова</a></p>
+{% else %}
+    <h1>Поиск постов</h1>
+    <form method="get">
+        {{ form.as_p }}
+        <input type="submit" value="Поиск">
+    </form>
+{% endif %}
+{% endblock content %}

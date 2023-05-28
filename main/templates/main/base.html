@@ -1,3 +1,4 @@
+{% load main_tags %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="ru">
@@ -8,15 +9,44 @@
         {% endblock title %}
     </title>
     <link href="{% static 'css/blog.css' %}" rel="stylesheet">
+    <style type="text/css">
+        h1, h2, h3, h4, p, span, li {
+            color: #cccccc;
+        }
+        a {
+            color: aquamarine;
+        }
+        input, textarea {
+            background: #cccccc;
+        }
+    </style>
 </head>
-<body>
+<body style="background: #333333">
     <div id="content">
         {% block content %}
         {% endblock content %}
     </div>
     <div id="sidebar">
         <h2>My blog</h2>
-        <p>Это мой блог</p>
+        <p>
+            Это мой блог.
+            Я написал постов: {% total_posts %}.
+        </p>
+        <p><a href="{% url 'main:post_feed' %}">Подпишитесь на мою RSS ленту</a></p>
+
+        <h3>Последние посты</h3>
+        {% show_latest_posts 3 %}
+
+        <h3>Наиболее комментируемые посты</h3>
+        {% get_most_commented_posts as most_commented_posts %}
+        <ul>
+            {% for post in most_commented_posts %}
+                <li>
+                    <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+
     </div>
 </body>
 </html>
